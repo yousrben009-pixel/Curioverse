@@ -1,0 +1,1007 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Curioverse — Un sujet par jour</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;700;800&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0C0C0F;
+      --surface: #141418;
+      --surface-2: #1C1C22;
+      --border: rgba(255,255,255,0.08);
+      --border-strong: rgba(255,255,255,0.14);
+      --text: #F0EFF5;
+      --text-secondary: #9896A4;
+      --text-muted: #5C5A68;
+      --accent: #7F77DD;
+      --accent-light: #A8A2E8;
+      --accent-bg: rgba(127,119,221,0.12);
+      --accent-border: rgba(127,119,221,0.3);
+      --success: #1D9E75;
+      --success-bg: rgba(29,158,117,0.12);
+      --danger: #E24B4A;
+      --danger-bg: rgba(226,75,74,0.12);
+      --radius: 10px;
+      --radius-lg: 16px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      font-size: 15px;
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    /* NAV */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 24px;
+      background: rgba(12,12,15,0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .logo {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 20px;
+      color: var(--text);
+      letter-spacing: -0.5px;
+    }
+    .logo span { color: var(--accent); }
+
+    .nav-right { display: flex; gap: 8px; align-items: center; }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 14px;
+      border-radius: var(--radius);
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      border: 1px solid var(--border-strong);
+      background: var(--surface);
+      color: var(--text-secondary);
+      transition: all 0.15s;
+      font-family: 'Inter', sans-serif;
+    }
+    .btn:hover { border-color: var(--border-strong); color: var(--text); background: var(--surface-2); }
+    .btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+    .btn.primary:hover { background: var(--accent-light); border-color: var(--accent-light); }
+
+    /* HERO */
+    .hero {
+      padding: 56px 24px 32px;
+      max-width: 680px;
+    }
+
+    .hero-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      color: var(--accent-light);
+      background: var(--accent-bg);
+      border: 1px solid var(--accent-border);
+      padding: 4px 12px;
+      border-radius: 20px;
+      margin-bottom: 20px;
+    }
+    .hero-tag::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); display: block; }
+
+    .hero h1 {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(28px, 5vw, 42px);
+      font-weight: 800;
+      line-height: 1.15;
+      letter-spacing: -1px;
+      color: var(--text);
+      margin-bottom: 14px;
+    }
+    .hero h1 em { color: var(--accent); font-style: normal; }
+
+    .hero p {
+      font-size: 15px;
+      color: var(--text-secondary);
+      max-width: 480px;
+    }
+
+    /* FILTERS */
+    .filters {
+      display: flex;
+      gap: 8px;
+      padding: 0 24px 28px;
+      flex-wrap: wrap;
+    }
+
+    .chip {
+      font-size: 12px;
+      font-weight: 500;
+      padding: 5px 13px;
+      border-radius: 20px;
+      border: 1px solid var(--border-strong);
+      color: var(--text-muted);
+      cursor: pointer;
+      background: transparent;
+      transition: all 0.15s;
+      font-family: 'Inter', sans-serif;
+    }
+    .chip:hover { color: var(--text-secondary); border-color: var(--border-strong); }
+    .chip.active {
+      background: var(--accent-bg);
+      border-color: var(--accent-border);
+      color: var(--accent-light);
+    }
+
+    /* GRID */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 16px;
+      padding: 0 24px 60px;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      cursor: pointer;
+      transition: border-color 0.2s, transform 0.2s;
+    }
+    .card:hover {
+      border-color: var(--accent-border);
+      transform: translateY(-2px);
+    }
+
+    .card-thumb {
+      height: 130px;
+      background: var(--surface-2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      position: relative;
+    }
+    .card-thumb img { width: 100%; height: 100%; object-fit: cover; }
+    .card-thumb .emoji { font-size: 40px; }
+
+    .card-body { padding: 12px 14px 14px; }
+
+    .card-cat {
+      font-size: 10px;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: var(--accent);
+      margin-bottom: 4px;
+    }
+
+    .card-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text);
+      line-height: 1.35;
+      margin-bottom: 10px;
+    }
+
+    .card-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .slide-count {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .badge-new {
+      font-size: 10px;
+      font-weight: 500;
+      background: var(--success-bg);
+      color: var(--success);
+      border: 1px solid rgba(29,158,117,0.3);
+      padding: 2px 7px;
+      border-radius: 4px;
+    }
+
+    .empty-state {
+      grid-column: 1/-1;
+      padding: 60px 20px;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 14px;
+    }
+
+    /* OVERLAY READER */
+    .overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.7);
+      backdrop-filter: blur(4px);
+      z-index: 200;
+      align-items: flex-end;
+      justify-content: center;
+    }
+    .overlay.open { display: flex; }
+
+    .reader {
+      background: var(--surface);
+      border: 1px solid var(--border-strong);
+      border-bottom: none;
+      border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+      width: 100%;
+      max-width: 640px;
+      padding: 24px 24px 32px;
+      max-height: 90vh;
+      overflow-y: auto;
+      animation: slideUp 0.25s ease;
+    }
+
+    @keyframes slideUp {
+      from { transform: translateY(30px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    .reader-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      margin-bottom: 18px;
+      gap: 12px;
+    }
+
+    .reader-info {}
+    .reader-cat {
+      font-size: 11px;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: var(--accent);
+      margin-bottom: 4px;
+    }
+    .reader-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text);
+      line-height: 1.3;
+    }
+
+    .close-btn {
+      flex-shrink: 0;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      border: 1px solid var(--border-strong);
+      background: var(--surface-2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: var(--text-secondary);
+      font-size: 16px;
+      transition: all 0.15s;
+      font-family: 'Inter', sans-serif;
+    }
+    .close-btn:hover { color: var(--text); background: var(--surface); }
+
+    .slide-area {
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      min-height: 220px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      margin-bottom: 16px;
+    }
+    .slide-area img {
+      width: 100%;
+      display: block;
+      border-radius: var(--radius-lg);
+    }
+    .slide-placeholder {
+      text-align: center;
+      padding: 40px;
+      color: var(--text-muted);
+    }
+    .slide-placeholder .big-emoji { font-size: 48px; margin-bottom: 12px; display: block; }
+    .slide-placeholder p { font-size: 13px; line-height: 1.6; }
+
+    .slide-nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+
+    .nav-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 7px 14px;
+      border: 1px solid var(--border-strong);
+      border-radius: var(--radius);
+      background: var(--surface-2);
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all 0.15s;
+      font-family: 'Inter', sans-serif;
+    }
+    .nav-btn:hover:not(:disabled) { color: var(--text); border-color: var(--border-strong); }
+    .nav-btn:disabled { opacity: 0.25; cursor: default; }
+
+    .dots {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+    }
+    .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--border-strong);
+      transition: all 0.2s;
+      cursor: pointer;
+    }
+    .dot.active { background: var(--accent); width: 18px; border-radius: 3px; }
+
+    /* QUIZ */
+    .quiz-wrap {
+      border-top: 1px solid var(--border);
+      padding-top: 20px;
+    }
+
+    .quiz-label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 11px;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: var(--accent);
+      margin-bottom: 10px;
+    }
+    .quiz-label::before { content: '✦'; font-size: 10px; }
+
+    .quiz-q {
+      font-family: 'Syne', sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 14px;
+      line-height: 1.4;
+    }
+
+    .quiz-opts {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .qopt {
+      padding: 11px 15px;
+      border: 1px solid var(--border-strong);
+      border-radius: var(--radius);
+      font-size: 13px;
+      color: var(--text-secondary);
+      cursor: pointer;
+      background: var(--surface-2);
+      text-align: left;
+      transition: all 0.15s;
+      font-family: 'Inter', sans-serif;
+      line-height: 1.4;
+    }
+    .qopt:hover:not(:disabled) { border-color: var(--accent-border); color: var(--text); background: var(--accent-bg); }
+    .qopt.correct { background: var(--success-bg); border-color: rgba(29,158,117,0.4); color: var(--success); }
+    .qopt.wrong { background: var(--danger-bg); border-color: rgba(226,75,74,0.4); color: var(--danger); }
+    .qopt:disabled { cursor: default; }
+
+    .quiz-result {
+      display: none;
+      margin-top: 14px;
+      padding: 12px 15px;
+      border-radius: var(--radius);
+      font-size: 13px;
+      font-weight: 500;
+    }
+    .quiz-result.correct { background: var(--success-bg); color: var(--success); }
+    .quiz-result.wrong { background: var(--danger-bg); color: var(--danger); }
+
+    /* ADMIN PAGE */
+    #page-admin {
+      display: none;
+      padding: 32px 24px 60px;
+      max-width: 600px;
+    }
+
+    #page-admin h2 {
+      font-family: 'Syne', sans-serif;
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--text);
+      margin-bottom: 6px;
+    }
+    #page-admin .sub {
+      font-size: 13px;
+      color: var(--text-secondary);
+      margin-bottom: 28px;
+    }
+
+    .form-section {
+      margin-bottom: 28px;
+    }
+    .form-section-title {
+      font-size: 11px;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: var(--text-muted);
+      margin-bottom: 14px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .form-group { margin-bottom: 14px; }
+    .form-group label {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      display: block;
+      margin-bottom: 6px;
+    }
+    .form-group input,
+    .form-group select {
+      width: 100%;
+      padding: 10px 13px;
+      border: 1px solid var(--border-strong);
+      border-radius: var(--radius);
+      background: var(--surface-2);
+      font-size: 13px;
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      transition: border-color 0.15s;
+    }
+    .form-group input:focus,
+    .form-group select:focus {
+      outline: none;
+      border-color: var(--accent-border);
+    }
+    .form-group select option { background: var(--surface); }
+
+    .upload-zone {
+      border: 1px dashed var(--accent-border);
+      border-radius: var(--radius-lg);
+      background: var(--accent-bg);
+      padding: 28px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .upload-zone:hover { border-color: var(--accent); }
+    .upload-zone p { font-size: 13px; color: var(--text-secondary); margin-top: 8px; }
+    .upload-zone .hint { font-size: 11px; color: var(--text-muted); margin-top: 4px; }
+
+    .slides-preview {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+      gap: 10px;
+      margin-top: 12px;
+    }
+    .slide-thumb {
+      position: relative;
+      aspect-ratio: 16/10;
+      border-radius: 8px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+    .slide-thumb img { width: 100%; height: 100%; object-fit: cover; }
+    .slide-thumb .del-slide {
+      position: absolute;
+      top: 4px;
+      right: 4px;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: rgba(0,0,0,0.7);
+      border: none;
+      color: #fff;
+      font-size: 11px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .slide-num {
+      position: absolute;
+      bottom: 4px;
+      left: 4px;
+      font-size: 10px;
+      font-weight: 500;
+      background: rgba(0,0,0,0.6);
+      color: #fff;
+      padding: 1px 5px;
+      border-radius: 3px;
+    }
+
+    .quiz-builder {
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 18px;
+    }
+
+    .quiz-opt-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    .quiz-opt-row input[type="radio"] { accent-color: var(--accent); flex-shrink: 0; width: 16px; height: 16px; cursor: pointer; }
+    .quiz-opt-row input[type="text"] {
+      flex: 1;
+      padding: 8px 12px;
+      border: 1px solid var(--border-strong);
+      border-radius: var(--radius);
+      background: var(--surface);
+      font-size: 13px;
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+    }
+    .quiz-opt-row input[type="text"]:focus { outline: none; border-color: var(--accent-border); }
+    .radio-label { font-size: 11px; color: var(--text-muted); white-space: nowrap; }
+
+    .btn-publish {
+      width: 100%;
+      padding: 13px;
+      background: var(--accent);
+      border: none;
+      border-radius: var(--radius);
+      color: #fff;
+      font-family: 'Syne', sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.15s;
+      margin-top: 6px;
+    }
+    .btn-publish:hover { background: var(--accent-light); }
+
+    .toast {
+      display: none;
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--success);
+      color: #fff;
+      padding: 12px 20px;
+      border-radius: var(--radius);
+      font-size: 13px;
+      font-weight: 500;
+      z-index: 999;
+      animation: fadeIn 0.2s ease;
+    }
+    @keyframes fadeIn { from { opacity: 0; transform: translateX(-50%) translateY(8px); } to { opacity: 1; transform: translateX(-50%) translateY(0); } }
+
+    /* RESPONSIVE */
+    @media (max-width: 480px) {
+      nav { padding: 12px 16px; }
+      .hero { padding: 36px 16px 24px; }
+      .filters { padding: 0 16px 20px; }
+      .grid { padding: 0 16px 40px; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); }
+      #page-admin { padding: 24px 16px 40px; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <div class="logo">Curio<span>verse</span></div>
+    <div class="nav-right">
+      <button class="btn" id="btn-home" onclick="showHome()">Accueil</button>
+      <button class="btn primary" id="btn-admin" onclick="showAdmin()">+ Ajouter un sujet</button>
+    </div>
+  </nav>
+
+  <!-- HOME -->
+  <div id="page-home">
+    <div class="hero">
+      <div class="hero-tag">1 sujet par jour</div>
+      <h1>Nourris ta <em>curiosité</em>,<br>un sujet à la fois.</h1>
+      <p>Des sujets de culture générale en slides — histoire, sciences, géopolitique, psychologie et plus encore.</p>
+    </div>
+
+    <div class="filters">
+      <button class="chip active" onclick="filter('tout', this)">Tout</button>
+      <button class="chip" onclick="filter('Histoire', this)">Histoire</button>
+      <button class="chip" onclick="filter('Sciences', this)">Sciences</button>
+      <button class="chip" onclick="filter('Géopolitique', this)">Géopolitique</button>
+      <button class="chip" onclick="filter('Psychologie', this)">Psychologie</button>
+      <button class="chip" onclick="filter('Art & culture', this)">Art & culture</button>
+      <button class="chip" onclick="filter('Philosophie', this)">Philosophie</button>
+    </div>
+
+    <div class="grid" id="grid"></div>
+  </div>
+
+  <!-- ADMIN -->
+  <div id="page-admin">
+    <h2>Nouveau sujet</h2>
+    <p class="sub">Remplis les infos, uploade tes slides Canva en PNG, et publie.</p>
+
+    <div class="form-section">
+      <div class="form-section-title">Infos générales</div>
+      <div class="form-group">
+        <label>Titre du sujet</label>
+        <input type="text" id="inp-title" placeholder="ex : La chute de Constantinople">
+      </div>
+      <div class="form-group">
+        <label>Catégorie</label>
+        <select id="inp-cat">
+          <option>Histoire</option>
+          <option>Sciences</option>
+          <option>Géopolitique</option>
+          <option>Psychologie</option>
+          <option>Art & culture</option>
+          <option>Philosophie</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="form-section">
+      <div class="form-section-title">Slides (PNG depuis Canva)</div>
+      <label class="upload-zone" for="file-input">
+        <div style="font-size:28px">🖼️</div>
+        <p>Clique pour uploader tes slides</p>
+        <p class="hint">PNG recommandé · Plusieurs fichiers acceptés · L'ordre compte</p>
+      </label>
+      <input type="file" id="file-input" accept="image/*" multiple style="display:none" onchange="addSlides(event)">
+      <div class="slides-preview" id="slides-preview"></div>
+    </div>
+
+    <div class="form-section">
+      <div class="form-section-title">Quiz de fin</div>
+      <div class="quiz-builder">
+        <div class="form-group">
+          <label>Question</label>
+          <input type="text" id="q-question" placeholder="ex : En quelle année tombe Constantinople ?">
+        </div>
+        <div style="font-size:11px;color:var(--text-muted);margin-bottom:10px;">Coche le bouton radio à côté de la bonne réponse</div>
+        <div class="quiz-opt-row">
+          <input type="radio" name="correct" value="0" id="r0" checked>
+          <span class="radio-label">A</span>
+          <input type="text" id="q-a" placeholder="Option A">
+        </div>
+        <div class="quiz-opt-row">
+          <input type="radio" name="correct" value="1" id="r1">
+          <span class="radio-label">B</span>
+          <input type="text" id="q-b" placeholder="Option B">
+        </div>
+        <div class="quiz-opt-row">
+          <input type="radio" name="correct" value="2" id="r2">
+          <span class="radio-label">C</span>
+          <input type="text" id="q-c" placeholder="Option C">
+        </div>
+      </div>
+    </div>
+
+    <button class="btn-publish" onclick="publish()">Publier le sujet →</button>
+  </div>
+
+  <!-- READER OVERLAY -->
+  <div class="overlay" id="overlay" onclick="handleOverlayClick(event)">
+    <div class="reader" id="reader">
+      <div class="reader-header">
+        <div class="reader-info">
+          <div class="reader-cat" id="reader-cat"></div>
+          <div class="reader-title" id="reader-title"></div>
+        </div>
+        <button class="close-btn" onclick="closeReader()">✕</button>
+      </div>
+
+      <div class="slide-area" id="slide-area"></div>
+
+      <div class="slide-nav">
+        <button class="nav-btn" id="prev-btn" onclick="changeSlide(-1)">← Préc.</button>
+        <div class="dots" id="dots"></div>
+        <button class="nav-btn" id="next-btn" onclick="changeSlide(1)">Suiv. →</button>
+      </div>
+
+      <div class="quiz-wrap" id="quiz-wrap" style="display:none">
+        <div class="quiz-label">Quiz</div>
+        <div class="quiz-q" id="quiz-q"></div>
+        <div class="quiz-opts" id="quiz-opts"></div>
+        <div class="quiz-result" id="quiz-result"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast">✓ Sujet publié avec succès !</div>
+
+  <script>
+    const CAT_EMOJI = {
+      'Histoire': '🏛️',
+      'Sciences': '🔬',
+      'Géopolitique': '🌍',
+      'Psychologie': '🧠',
+      'Art & culture': '🎨',
+      'Philosophie': '💭'
+    };
+
+    // Données de démo
+    let topics = [
+      {
+        id: 1, title: 'La chute de Constantinople', cat: 'Histoire', isNew: true, slides: [],
+        quiz: { q: 'En quelle année Constantinople tombe-t-elle ?', opts: ['1453', '1492', '1337'], correct: 0 }
+      },
+      {
+        id: 2, title: "L'effet placebo", cat: 'Sciences', isNew: false, slides: [],
+        quiz: { q: "D'où vient le mot « placebo » ?", opts: ['Du latin "je plairai"', 'Du grec "fausse pilule"', "De l'anglais \"fake pill\""], correct: 0 }
+      },
+      {
+        id: 3, title: 'Le biais de confirmation', cat: 'Psychologie', isNew: true, slides: [],
+        quiz: { q: 'Ce biais nous pousse à faire quoi ?', opts: ['Chercher ce qui confirme nos idées', 'Oublier plus vite', 'Prendre de meilleures décisions'], correct: 0 }
+      },
+      {
+        id: 4, title: 'Le mouvement Bauhaus', cat: 'Art & culture', isNew: false, slides: [],
+        quiz: { q: 'Dans quelle ville le Bauhaus a-t-il été fondé ?', opts: ['Berlin', 'Weimar', 'Munich'], correct: 1 }
+      },
+      {
+        id: 5, title: 'Le canal de Suez', cat: 'Géopolitique', isNew: false, slides: [],
+        quiz: { q: "Quelle part du commerce mondial passe par le canal ?", opts: ['5 %', '12 %', '25 %'], correct: 1 }
+      },
+      {
+        id: 6, title: "L'allégorie de la caverne", cat: 'Philosophie', isNew: true, slides: [],
+        quiz: { q: 'Qui est l\'auteur de l\'allégorie de la caverne ?', opts: ['Aristote', 'Socrate', 'Platon'], correct: 2 }
+      }
+    ];
+
+    let slideImages = [];
+    let currentTopic = null;
+    let currentSlide = 0;
+    let quizAnswered = false;
+    let currentFilter = 'tout';
+
+    function showHome() {
+      document.getElementById('page-home').style.display = '';
+      document.getElementById('page-admin').style.display = 'none';
+      renderGrid(currentFilter);
+    }
+
+    function showAdmin() {
+      document.getElementById('page-home').style.display = 'none';
+      document.getElementById('page-admin').style.display = 'block';
+    }
+
+    function filter(cat, el) {
+      currentFilter = cat;
+      document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+      el.classList.add('active');
+      renderGrid(cat);
+    }
+
+    function renderGrid(cat) {
+      const g = document.getElementById('grid');
+      const filtered = topics.filter(t => cat === 'tout' || t.cat === cat);
+      if (filtered.length === 0) {
+        g.innerHTML = '<div class="empty-state">Aucun sujet dans cette catégorie pour l\'instant.</div>';
+        return;
+      }
+      g.innerHTML = filtered.map(t => `
+        <div class="card" onclick="openTopic(${t.id})">
+          <div class="card-thumb">
+            ${t.slides.length ? `<img src="${t.slides[0]}" alt="${t.title}">` : `<span class="emoji">${CAT_EMOJI[t.cat] || '📖'}</span>`}
+          </div>
+          <div class="card-body">
+            <div class="card-cat">${t.cat}</div>
+            <div class="card-title">${t.title}</div>
+            <div class="card-footer">
+              <span class="slide-count">${t.slides.length || '?'} slides</span>
+              ${t.isNew ? '<span class="badge-new">Nouveau</span>' : ''}
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function openTopic(id) {
+      currentTopic = topics.find(t => t.id === id);
+      currentSlide = 0;
+      quizAnswered = false;
+      document.getElementById('reader-cat').textContent = currentTopic.cat;
+      document.getElementById('reader-title').textContent = currentTopic.title;
+      buildDots();
+      renderSlide();
+      document.getElementById('overlay').classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeReader() {
+      document.getElementById('overlay').classList.remove('open');
+      document.body.style.overflow = '';
+    }
+
+    function handleOverlayClick(e) {
+      if (e.target === document.getElementById('overlay')) closeReader();
+    }
+
+    function buildDots() {
+      const n = Math.max(1, currentTopic.slides.length);
+      document.getElementById('dots').innerHTML = Array.from({ length: n }, (_, i) =>
+        `<div class="dot${i === 0 ? ' active' : ''}" onclick="goToSlide(${i})"></div>`
+      ).join('');
+    }
+
+    function goToSlide(i) {
+      currentSlide = i;
+      renderSlide();
+    }
+
+    function renderSlide() {
+      const t = currentTopic;
+      const max = Math.max(0, (t.slides.length || 1) - 1);
+      const isLast = currentSlide >= max;
+
+      const sa = document.getElementById('slide-area');
+      if (t.slides.length > 0) {
+        sa.innerHTML = `<img src="${t.slides[currentSlide]}" alt="Slide ${currentSlide + 1}">`;
+      } else {
+        sa.innerHTML = `
+          <div class="slide-placeholder">
+            <span class="big-emoji">${CAT_EMOJI[t.cat] || '📖'}</span>
+            <p>Les slides de ce sujet apparaîtront ici.<br>Exporte tes slides Canva en PNG et ajoute-les via le panneau admin.</p>
+          </div>`;
+      }
+
+      document.getElementById('prev-btn').disabled = currentSlide === 0;
+      document.getElementById('next-btn').disabled = isLast;
+
+      document.querySelectorAll('.dot').forEach((d, i) => d.classList.toggle('active', i === currentSlide));
+
+      const qw = document.getElementById('quiz-wrap');
+      if (isLast && t.quiz) {
+        qw.style.display = '';
+        if (!quizAnswered) renderQuiz();
+      } else {
+        qw.style.display = 'none';
+      }
+    }
+
+    function changeSlide(dir) {
+      const max = Math.max(0, (currentTopic.slides.length || 1) - 1);
+      currentSlide = Math.max(0, Math.min(max, currentSlide + dir));
+      renderSlide();
+    }
+
+    function renderQuiz() {
+      const q = currentTopic.quiz;
+      document.getElementById('quiz-q').textContent = q.q;
+      document.getElementById('quiz-result').style.display = 'none';
+      document.getElementById('quiz-opts').innerHTML = q.opts.map((o, i) =>
+        `<button class="qopt" onclick="answer(${i})">${o}</button>`
+      ).join('');
+    }
+
+    function answer(idx) {
+      if (quizAnswered) return;
+      quizAnswered = true;
+      const correct = currentTopic.quiz.correct;
+      document.querySelectorAll('.qopt').forEach((b, i) => {
+        if (i === correct) b.classList.add('correct');
+        else if (i === idx) b.classList.add('wrong');
+        b.disabled = true;
+      });
+      const res = document.getElementById('quiz-result');
+      res.style.display = 'block';
+      if (idx === correct) {
+        res.className = 'quiz-result correct';
+        res.textContent = '✓ Bonne réponse ! Bien joué.';
+      } else {
+        res.className = 'quiz-result wrong';
+        res.textContent = `✗ Pas tout à fait. La bonne réponse : ${currentTopic.quiz.opts[correct]}`;
+      }
+    }
+
+    // ADMIN
+    function addSlides(e) {
+      const files = Array.from(e.target.files);
+      files.forEach(f => {
+        const r = new FileReader();
+        r.onload = ev => {
+          slideImages.push(ev.target.result);
+          renderSlidesPreview();
+        };
+        r.readAsDataURL(f);
+      });
+      e.target.value = '';
+    }
+
+    function renderSlidesPreview() {
+      document.getElementById('slides-preview').innerHTML = slideImages.map((src, i) => `
+        <div class="slide-thumb">
+          <img src="${src}" alt="Slide ${i + 1}">
+          <button class="del-slide" onclick="delSlide(${i})">✕</button>
+          <span class="slide-num">${i + 1}</span>
+        </div>
+      `).join('');
+    }
+
+    function delSlide(i) {
+      slideImages.splice(i, 1);
+      renderSlidesPreview();
+    }
+
+    function publish() {
+      const title = document.getElementById('inp-title').value.trim();
+      const cat = document.getElementById('inp-cat').value;
+      const q = document.getElementById('q-question').value.trim();
+      const opts = [
+        document.getElementById('q-a').value.trim(),
+        document.getElementById('q-b').value.trim(),
+        document.getElementById('q-c').value.trim()
+      ];
+      const correct = parseInt(document.querySelector('input[name=correct]:checked')?.value ?? 0);
+
+      if (!title) { alert('Ajoute un titre !'); return; }
+      if (!q || opts.some(o => !o)) { alert('Remplis la question et les 3 options du quiz !'); return; }
+
+      const newId = Math.max(...topics.map(t => t.id)) + 1;
+      topics.unshift({
+        id: newId, title, cat, isNew: true,
+        slides: [...slideImages],
+        quiz: { q, opts, correct }
+      });
+
+      // Reset form
+      document.getElementById('inp-title').value = '';
+      document.getElementById('q-question').value = '';
+      ['q-a', 'q-b', 'q-c'].forEach(id => document.getElementById(id).value = '');
+      document.querySelector('input[name=correct][value="0"]').checked = true;
+      slideImages = [];
+      renderSlidesPreview();
+
+      const toast = document.getElementById('toast');
+      toast.style.display = 'block';
+      setTimeout(() => toast.style.display = 'none', 3000);
+
+      showHome();
+    }
+
+    // Keyboard nav
+    document.addEventListener('keydown', e => {
+      if (!document.getElementById('overlay').classList.contains('open')) return;
+      if (e.key === 'Escape') closeReader();
+      if (e.key === 'ArrowRight') changeSlide(1);
+      if (e.key === 'ArrowLeft') changeSlide(-1);
+    });
+
+    // Init
+    renderGrid('tout');
+  </script>
+</body>
+</html>
